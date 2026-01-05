@@ -1,10 +1,34 @@
-from rag.vector_store import initialize_vector_store
-from rag.local_llm import create_local_llm
+from fastapi import FastAPI
+from orchestration.graph import app_graph
 
-vector_store = initialize_vector_store(
-    "data/artificial_intelligence_tutorial.pdf"
-)
-llm = create_local_llm()
+app = FastAPI(title="Multi-Agent RAG System")
 
-def handle_user_query(q):
-    return {"answer": "Integrated successfully"}
+@app.api_route("/", methods=["GET", "HEAD"])
+def root():
+    return {"status": "ok", "message": "Service running"}
+
+@app.api_route("/health", methods=["GET", "HEAD"])
+def health():
+    return {"status": "healthy"}
+
+@app.post("/ask")
+def ask(query: str):
+    state = {
+        "user_query": query,
+        "operation": "",
+        "plan": "",
+        "react_steps": [],
+        "retrieved_context": "",
+        "citations": [],
+        "tool_name": "",
+        "tool_input": {},
+        "tool_result": {},
+        "final_answer": "",
+        "error": "",
+    }
+    result = app_graph.invoke(state)
+    return {
+        "answer": result["final_answer"],
+        "citations": result["citations"],
+        "react_steps": result["react_steps"],
+    }
