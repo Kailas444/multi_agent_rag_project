@@ -7,7 +7,14 @@ from rag.pdf_loader import extract_pdf_pages
 FAISS_DIR = "faiss_store"
 PDF_PATH = "data/artificial_intelligence_tutorial.pdf"
 
-def load_vector_store():
+_vector_store = None   # 👈 cache (lazy)
+
+def get_vector_store():
+    global _vector_store
+
+    if _vector_store is not None:
+        return _vector_store
+
     os.makedirs(FAISS_DIR, exist_ok=True)
 
     embeddings = HuggingFaceEmbeddings(
@@ -15,11 +22,12 @@ def load_vector_store():
     )
 
     if os.path.exists(os.path.join(FAISS_DIR, "index.faiss")):
-        return FAISS.load_local(
+        _vector_store = FAISS.load_local(
             FAISS_DIR,
             embeddings,
             allow_dangerous_deserialization=True,
         )
+        return _vector_store
 
     docs = extract_pdf_pages(PDF_PATH)
 
@@ -29,10 +37,7 @@ def load_vector_store():
     )
     chunks = splitter.split_documents(docs)
 
-    vs = FAISS.from_documents(chunks, embeddings)
-    vs.save_local(FAISS_DIR)
+    _vector_store = FAISS.from_documents(chunks, embeddings)
+    _vector_store.save_local(FAISS_DIR)
 
-    return vs
-
-# ✅ CREATE GLOBAL INSTANCE (THIS WAS MISSING)
-vector_store = load_vector_store()
+    return _vector_store
