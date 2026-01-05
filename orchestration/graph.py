@@ -4,6 +4,7 @@ from agents.rag_agent import rag_agent
 from agents.tool_agent import tool_agent
 from agents.synth_agent import synth_agent
 
+
 def router(state):
     return "tool" if state["operation"] == "tool" else "rag"
 
