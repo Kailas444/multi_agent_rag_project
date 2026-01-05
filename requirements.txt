@@ -10,7 +10,7 @@ langchain-text-splitters==0.2.4
 langchain-huggingface==0.1.0
 
 # ---------- RAG dependencies ----------
-faiss-cpu==1.8.0.post1
+faiss-cpu==1.9.0.post1
 sentence-transformers==3.0.1
 
 # ---------- Local LLM ----------
