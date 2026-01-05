@@ -1,5 +1,5 @@
-from tools.weather import weather_tool
-from tools.calculator import calculator_tool
+from tools.weather_tool import weather_tool
+from tools.calculator_tool import calculator_tool
 
 ALLOWED_TOOLS = {"weather", "calculator"}
 
