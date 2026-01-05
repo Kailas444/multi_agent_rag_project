@@ -1,4 +1,7 @@
 from rag.vector_store import vector_store
+from rag.vector_store import load_vector_store
+
+vector_store = load_vector_store()
 
 def rag_agent(state):
     query = state["user_query"]
