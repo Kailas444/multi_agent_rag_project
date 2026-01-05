@@ -1,25 +1,25 @@
-# ---------- Core runtime ----------
+# ---------- Web ----------
 fastapi==0.111.1
 uvicorn==0.30.3
 
-# ---------- LangChain stack (VERSION LOCKED) ----------
-langchain==0.2.16
+# ---------- LangGraph (pinned) ----------
 langgraph==0.2.28
+
+# ---------- LangChain (keep loosely pinned) ----------
+langchain==0.2.16
 langchain-community==0.2.16
 langchain-text-splitters==0.2.4
-langchain-huggingface==0.1.0
 
-# ---------- RAG dependencies ----------
+# ---------- RAG stack ----------
 faiss-cpu==1.9.0.post1
 sentence-transformers==3.0.1
 
-# ---------- Local LLM ----------
-transformers==4.43.3
-accelerate==0.33.0
+# ---------- Local LLM (do NOT over-pin) ----------
+transformers>=4.40,<4.45
 torch==2.5.1
-
+accelerate>=0.30,<0.34
 
 # ---------- Utilities ----------
 pypdf==4.3.1
 requests==2.32.3
-pydantic==2.8.2
+pydantic>=2.7,<2.9
