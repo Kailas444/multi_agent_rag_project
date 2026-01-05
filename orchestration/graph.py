@@ -1,5 +1,5 @@
 from langgraph.graph import StateGraph, END
-from agents.planner import planner_agent
+from agents.planner_agent import planner_agent
 from agents.rag_agent import rag_agent
 from agents.tool_agent import tool_agent
 from agents.synth_agent import synth_agent
