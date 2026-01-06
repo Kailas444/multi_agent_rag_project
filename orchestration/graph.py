@@ -1,29 +1,15 @@
 from langgraph.graph import StateGraph, END
-from agents.planner_agent import planner_agent
-from agents.rag_agent import rag_agent
-from agents.tool_agent import tool_agent
-from agents.synth_agent import synth_agent
-
-
-def router(state):
-    return "tool" if state["operation"] == "tool" else "rag"
+from agents.planner_agent import planning_agent
+from agents.tool_agent import tool_execution_agent
+from agents.synthesis_agent import synthesis_agent
 
 graph = StateGraph(dict)
-
-graph.add_node("planner", planner_agent)
-graph.add_node("rag", rag_agent)
-graph.add_node("tool", tool_agent)
-graph.add_node("synth", synth_agent)
+graph.add_node("planner", planning_agent)
+graph.add_node("tool", tool_execution_agent)
+graph.add_node("synth", synthesis_agent)
 
 graph.set_entry_point("planner")
-
-graph.add_conditional_edges(
-    "planner",
-    router,
-    {"rag": "rag", "tool": "tool"}
-)
-
-graph.add_edge("rag", "synth")
+graph.add_edge("planner", "tool")
 graph.add_edge("tool", "synth")
 graph.add_edge("synth", END)
 
