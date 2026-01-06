@@ -1,37 +1,28 @@
 import requests
+from pydantic import BaseModel, Field
 
-def weather_tool(data):
-    location = data.get("location", "Chennai")
-    days = data.get("days", 3)
+class WeatherInput(BaseModel):
+    location: str
+    days: int = Field(3, ge=1, le=7)
 
-    geo_url = "https://geocoding-api.open-meteo.com/v1/search"
-    geo_resp = requests.get(
-        geo_url,
-        params={"name": location, "count": 1},
-        timeout=10,
+def weather_tool_call(data):
+    inp = WeatherInput(**data)
+
+    geo = requests.get(
+        "https://geocoding-api.open-meteo.com/v1/search",
+        params={"name": inp.location, "count": 1}
     ).json()
 
-    if not geo_resp.get("results"):
-        return {"ok": False, "error": "Location not found"}
-
-    place = geo_resp["results"][0]
-    lat, lon = place["latitude"], place["longitude"]
-
-    forecast_url = "https://api.open-meteo.com/v1/forecast"
+    place = geo["results"][0]
     forecast = requests.get(
-        forecast_url,
+        "https://api.open-meteo.com/v1/forecast",
         params={
-            "latitude": lat,
-            "longitude": lon,
+            "latitude": place["latitude"],
+            "longitude": place["longitude"],
             "daily": "temperature_2m_max,temperature_2m_min",
-            "forecast_days": days,
-            "timezone": "auto",
-        },
-        timeout=10,
+            "forecast_days": inp.days,
+            "timezone": "auto"
+        }
     ).json()
 
-    return {
-        "ok": True,
-        "location": place["name"],
-        "forecast": forecast.get("daily", {}),
-    }
+    return {"ok": True, "location": place["name"], "forecast": forecast}
