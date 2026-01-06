@@ -1,22 +1,9 @@
-from tools.weather_tool import weather_tool
-from tools.calculator_tool import calculator_tool
+from tools.weather_tool import weather_tool_call
+from tools.calculator_tool import calculator_tool_call
 
-
-
-ALLOWED_TOOLS = {"weather", "calculator"}
-
-def tool_agent(state):
-    name = state["tool_name"]
-
-    if name not in ALLOWED_TOOLS:
-        state["final_answer"] = "Tool not allowed"
-        return state
-
-    if name == "weather":
-        result = weather_tool(state["tool_input"])
-    else:
-        result = calculator_tool(state["tool_input"])
-
-    state["tool_result"] = result
-    state["final_answer"] = str(result)
+def tool_execution_agent(state):
+    if state["tool_name"] == "weather":
+        state["tool_result"] = weather_tool_call(state["tool_input"])
+    elif state["tool_name"] == "calculator":
+        state["tool_result"] = calculator_tool_call(state["tool_input"])
     return state
